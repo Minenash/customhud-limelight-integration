@@ -45,10 +45,14 @@ dependencies {
 		exclude module: "fabric-api"
 	}
 
-	modImplementation files("${project.local_customhud_filepath}")
-//	modImplementation "maven.modrinth:customhud:${project.customhud_version}"
-	modCompileOnly "io.wispforest:limelight:${project.limelight_version}"
-	modLocalRuntime "io.wispforest:limelight:${project.limelight_version}"
+//	modImplementation files("${project.local_customhud_filepath}")
+//	modCompileOnly files("${project.local_limelight_filepath}")
+//	modLocalRuntime files("${project.local_limelight_filepath}")
+
+	modImplementation "maven.modrinth:customhud:${project.customhud_version}"
+	modImplementation "io.wispforest:limelight:${project.limelight_version}"
+	modImplementation annotationProcessor("io.wispforest:owo-lib:${project.owo_version}")
+//	modLocalRuntime "io.wispforest:limelight:${project.limelight_version}"
 	
 }
 

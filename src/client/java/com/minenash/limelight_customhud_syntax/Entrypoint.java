@@ -1,9 +1,7 @@
-package com.minenash.customhud_limelight_integration;
+package com.minenash.limelight_customhud_syntax;
 
 import io.wispforest.limelight.api.LimelightEntrypoint;
 import io.wispforest.limelight.api.extension.LimelightExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
