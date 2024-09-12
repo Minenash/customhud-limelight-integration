@@ -73,6 +73,7 @@ public class CustomHudExtension implements LimelightExtension {
 
     public ResultEntryGatherer syntax(String input) {
         Profile profile = Profile.create(PROFILE_NAME);
+        input = input.replaceAll("&([0-9a-u]|zm|zn)", "§$1");
         List<HudElement> elements = VariableParser.addElements(input, profile, 0, profile.enabled, false, new ListProviderSet());
         ComplexData.update(profile);
 

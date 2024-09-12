@@ -11,7 +11,7 @@
 		"homepage": "https://modrinth.com/mod/limelight-customhud-syntax",
 		"sources": "https://github.com/Minenash/customhud-limelight-integration"
 	},
-	"license": "MIT",
+	"license": "LGPL-3.0-only",
 	"icon": "assets/limelight_customhud_syntax/icon.png",
 	"environment": "*",
 	"entrypoints": {
