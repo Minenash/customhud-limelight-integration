@@ -2,6 +2,7 @@ package com.minenash.limelight_customhud_syntax;
 
 import com.minenash.customhud.HudElements.interfaces.ExecuteElement;
 import com.minenash.customhud.HudElements.interfaces.HudElement;
+import com.minenash.customhud.HudElements.interfaces.MultiElement;
 import com.minenash.customhud.HudElements.list.ListProviderSet;
 import com.minenash.customhud.VariableParser;
 import com.minenash.customhud.complex.ComplexData;
@@ -33,23 +34,31 @@ public class CustomHudExtension implements LimelightExtension {
 
     @Override
     public void gatherEntries(ResultGatherContext ctx, Consumer<ResultEntry> entryConsumer) {
-        HudElement element = VariableParser.parseElement2("{" + ctx.searchText() + "}", Profile.create(PROFILE_NAME), 0, new ComplexData.Enabled(), new ListProviderSet());
-        if (element != null)
-            entryConsumer.accept( new CustomHudResultEntry(element.getString(), false) );
+        Errors.clearErrors(PROFILE_NAME);
+        Profile profile = Profile.create(PROFILE_NAME);
+        HudElement element = VariableParser.parseElement2("{" + ctx.searchText() + "}", profile, 0, profile.enabled, new ListProviderSet());
+
+        if (element != null) {
+            ComplexData.update(profile);
+            entryConsumer.accept(new CustomHudResultEntry(element.getString(), false));
+        }
     }
 
     @Override
     public @Nullable ResultEntryGatherer checkExclusiveGatherer(ResultGatherContext ctx) {
         Errors.clearErrors(PROFILE_NAME);
         String text = ctx.searchText();
-        if (text.startsWith("$")) return expression(ctx, text.substring(1));
-        if (text.startsWith("`")) return syntax(ctx, text.substring(1));
+        if (text.startsWith("$")) return expression(text.substring(1));
+        if (text.startsWith("`")) return syntax(text.substring(1));
         return null;
     }
 
 
-    public ResultEntryGatherer expression(ResultGatherContext ctx, String input) {
-        Operation op = ExpressionParser.parseExpression(input, input, Profile.create(PROFILE_NAME), 0, new ComplexData.Enabled(), new ListProviderSet(), false);
+    public ResultEntryGatherer expression(String input) {
+        Profile profile = Profile.create(PROFILE_NAME);
+        Operation op = ExpressionParser.parseExpression(input, input, profile, 0, profile.enabled, new ListProviderSet(), false);
+        ComplexData.update(profile);
+
         return (ctx1, entryConsumer) -> {
             String value = Double.toString(op.getValue());
             entryConsumer.accept(new CustomHudResultEntry(value, false));
@@ -62,8 +71,11 @@ public class CustomHudExtension implements LimelightExtension {
         };
     }
 
-    public ResultEntryGatherer syntax(ResultGatherContext ctx, String input) {
-        List<HudElement> elements = VariableParser.addElements(input, Profile.create(PROFILE_NAME), 0, new ComplexData.Enabled(), false, new ListProviderSet());
+    public ResultEntryGatherer syntax(String input) {
+        Profile profile = Profile.create(PROFILE_NAME);
+        List<HudElement> elements = VariableParser.addElements(input, profile, 0, profile.enabled, false, new ListProviderSet());
+        ComplexData.update(profile);
+
         StringBuilder builder = new StringBuilder();
         for (HudElement element : elements) {
             if (element instanceof ExecuteElement ee)
